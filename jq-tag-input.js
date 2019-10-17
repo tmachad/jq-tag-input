@@ -13,11 +13,13 @@
     }
 
     class TagInput {
-        constructor(replacedInput) {
+        constructor(replacedInput, options) {
             this.tags = [];
             this.replacedInput = replacedInput;
-
-            this.root = $($.parseHTML(`<div class="tag-input"><input type="text" placeholder=""></div>`));
+            this.options = options;
+            this.root = $($.parseHTML(
+                `<div class="tag-input${this.options.useDefaultStyle ? " styled" : ""}"><input type="text" placeholder=""></div>`
+            ));
 
             let self = this;
             this.root.find("input").change(function() {
@@ -40,7 +42,7 @@
                 };
 
                 let self = this;
-                tag.element.find(".delete-tag").click(function() {
+                tag.element.click(function() {
                     self.removeTag(tag.text);
                 });
 
@@ -72,8 +74,13 @@
     }
 
     $.fn.tagInput = function(options) {
+        let defaults = {
+            useDefaultStyle: true
+        };
+        options = Object.assign({}, defaults, options);
+
         return this.each(function() {
-            let tagInput = new TagInput($(this));
+            let tagInput = new TagInput($(this), options);
         });
     }
 }(jQuery));
