@@ -1,0 +1,11 @@
+{
+  "name": "jq-tag-input",
+  "version": "1.0.0",
+  "description": "A JQuery plugin for creating tag input fields.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
