@@ -12,86 +12,68 @@
         return arr.join(",");
     }
 
-    $.fn.tagInput = function(options) {
-        return this.each(function() {
-            let self = $(this);
-            
-            // Generate tag input HTML
-            let div = $($.parseHTML(`<div class="tag-input ${self.attr("class")}"><input type="text" placeholder=""><div class="typeahead ${self.attr("class")}"></div></div>`));
+    class TagInput {
+        constructor(replacedInput) {
+            this.tags = [];
+            this.replacedInput = replacedInput;
 
-            let typeahead = div.find(".typeahead");
-            typeahead.hide();
+            this.root = $($.parseHTML(`<div class="tag-input"><input type="text" placeholder=""></div>`));
 
-            // Add tag to list of tags when tag name is entered
-            div.find("input").change(function() {
+            let self = this;
+            this.root.find("input").change(function() {
                 let input = $(this);
-                let inputValue = input.val().trim();
-
-                let tags = strToArr(self.val());
-
-                if (inputValue !== "" && !tags.includes(inputValue) && (options.tags == undefined || options.tags.includes(inputValue))) {
-                    let newTag = $.parseHTML(`<span class="tag ${options.tagClass}">${inputValue}<span class="close pl-1">&times;</span></span>`);
-
-                    $(newTag).click(function() {
-                        // Remove tag from original input field value list
-                        let tags = strToArr(self.val());
-                        tags = tags.filter((element) => element != inputValue);
-                        self.val(arrToStr(tags));
-                        self.change();
-
-                        $(this).remove();
-                    });
-
-                    // Add new tag to original input field value list
-                    tags.push(inputValue);
-                    self.val(arrToStr(tags));
-                    self.change();
-
-                    input.before(newTag);
-                    input.val("");
-                }
+                self.addTag(input.val());
+                input.val("");
             });
 
-            // Update typeahead when input changes
-            div.find("input").on("input", function() {
-                let input = $(this);
-                let inputValue = input.val().trim();
+            this.replacedInput.hide();
+            this.replacedInput.before(this.root);
+        }
 
-                typeahead.empty();
-                if (inputValue === "") {
-                    typeahead.hide();
-                } else {
-                    let matches = options.tags.filter((tag) => tag.includes(inputValue));
+        addTag(tagText) {
+            if (!this.tags.find((t) => t.text === tagText)) {
+                let tag = {
+                    text: tagText,
+                    element: $($.parseHTML(
+                        `<span class="tag">${tagText}<span class="delete-tag">&times;</span></span>`
+                    ))
+                };
 
-                    matches.forEach(tag => {
-                        let newMatch = $($.parseHTML(`<div class="suggestion">${tag}</div>`));
+                let self = this;
+                tag.element.find(".delete-tag").click(function() {
+                    self.removeTag(tag.text);
+                });
 
-                        newMatch.click(function() {
-                            let tags = strToArray(self.val());
-                            tags.push(tag);
+                this.tags.push(tag);
+                this.root.find("input").before(tag.element);
+                this.updateReplacedInputValue();
 
-                            input.val("");
-                            input.trigger("input");
+                return true;
+            }
 
-                            self.val(tags.join(","));
-                            self.change();
-                        });
+            return false;
+        }
 
-                        typeahead.append(newMatch);
-                    });
+        removeTag(tagText) {
+            let tag = this.tags.find((t) => t.text === tagText);
 
-                    if (matches.length > 0) {
-                        typeahead.show();
-                    } else {
-                        typeahead.hide();
-                    }
-                }
+            if (tag !== undefined) {
+                tag.element.remove();
+                this.tags = this.tags.filter((t) => t.text !== tag.text);
+                this.updateReplacedInputValue();
+            }
 
-            })
+            return tag !== undefined;
+        }
 
-            // Replace input field with generated HTML
-            self.hide();
-            self.before(div);
+        updateReplacedInputValue() {
+            this.replacedInput.val(this.tags.map((tag) => tag.text).join(",")).change();
+        }
+    }
+
+    $.fn.tagInput = function(options) {
+        return this.each(function() {
+            let tagInput = new TagInput($(this));
         });
     }
 }(jQuery));
