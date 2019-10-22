@@ -31,12 +31,17 @@
             this.replacedInput = replacedInput;
             this.options = options;
             this.root = $($.parseHTML(
-                `<div class="${this.options.className}${this.options.useDefaultStyle ? " styled" : ""}"><input type="text" placeholder="${this.options.placeholderText}"></div>`
+                `<div class="${this.options.classNames.overall}${this.options.useDefaultStyle ? " styled" : ""}">
+                    <input class="${this.options.classNames.input}" type="text" placeholder="${this.options.placeholderText}">
+                </div>`
             ));
             this.input = this.root.find("input");
 
-            
             let self = this;
+            this.root.click(function() {
+                self.input.focus();
+            });
+
             if (this.options.typeaheadjs) {
                 this.input.typeahead(
                     this.options.typeaheadjs, 
@@ -73,7 +78,7 @@
                 let tag = {
                     text: tagText,
                     element: $($.parseHTML(
-                        `<span class="tag">${tagText}<span class="delete-tag">&times;</span></span>`
+                        `<span class="${this.options.classNames.tag}">${tagText}<span class="${this.options.classNames.tagDelete}">&times;</span></span>`
                     ))
                 };
 
@@ -111,7 +116,12 @@
 
     $.fn.tagInput = function(options) {
         let defaults = {
-            className: "tag-input",
+            classNames: {
+                overall: "tag-input",
+                tag: "tag",
+                tagDelete: "delete-tag",
+                input: ""
+            },
             useDefaultStyle: true,
             placeholderText: "",
             typeaheadjs: false
