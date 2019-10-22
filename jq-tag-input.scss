@@ -3,7 +3,8 @@
     flex-direction: row;
     flex-wrap: wrap;
 
-    > input {
+    input,
+    .twitter-typeahead {
         border: none;
         flex-grow: 1;
     }
@@ -22,7 +23,8 @@
 .tag-input.styled {
     border: 1px solid grey;
     border-radius: 0.5rem;
-    overflow: hidden;
+
+    padding: 0 0.5rem;
 
     > .tag {
         background-color: lightgrey;
