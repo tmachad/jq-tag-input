@@ -49,8 +49,9 @@
                         suggestion = self.input.typeahead("val");
                     }
 
-                    self.addTag(suggestion);
-                    self.input.typeahead("val", "");
+                    if (self.addTag(suggestion)) {
+                        self.input.typeahead("val", "");
+                    }
                 }
 
                 this.input.bind("typeahead:autocomplete", eventHandler);
