@@ -115,21 +115,22 @@
     }
 
     $.fn.tagInput = function(options) {
-        let defaults = {
-            classNames: {
-                overall: "tag-input",
-                tag: "tag",
-                tagDelete: "delete-tag",
-                input: ""
-            },
-            useDefaultStyle: true,
-            placeholderText: "",
-            typeaheadjs: false
-        };
-        options = Object.assign({}, defaults, options);
+        options = Object.assign({}, $.fn.tagInput.defaults, options);
 
         return this.each(function() {
-            $(this).tagInput = new TagInput($(this), options);
+            $(this).data("tagInput", new TagInput($(this), options));
         });
     }
+
+    $.fn.tagInput.defaults = {
+        classNames: {
+            overall: "tag-input",
+            tag: "tag",
+            tagDelete: "delete-tag",
+            input: ""
+        },
+        useDefaultStyle: true,
+        placeholderText: "",
+        typeaheadjs: false
+    };
 }));
