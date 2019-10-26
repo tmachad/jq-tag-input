@@ -112,6 +112,10 @@
         updateReplacedInputValue() {
             this.replacedInput.val(this.tags.map((tag) => tag.text).join(",")).change();
         }
+
+        getTags() {
+            return this.tags.map((tag) => tag.element);
+        }
     }
 
     $.fn.tagInput = function(options) {
