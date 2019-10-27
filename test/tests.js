@@ -36,7 +36,7 @@ $(document).ready(function() {
             let tagInput = this.input.data("tagInput");
             assert.propEqual(tagInput.options, $.fn.tagInput.defaults, "default options applied");
             assert.ok(tagInput.root.is(".styled"), "default styling applied");
-            assert.ok(!$(".twitter-typeahead").length, "no typeahead instatiated");
+            assert.deepEqual($(".twitter-typeahead").length, 0, "no typeahead instatiated");
         });
 
         QUnit.test("Disable Default Styling", function(assert) {
@@ -48,7 +48,7 @@ $(document).ready(function() {
 
             let tagInput = this.input.data("tagInput");
             assert.propEqual(tagInput.options, options, "options applied");
-            assert.ok(!tagInput.root.is(".styled"), "default styling not applied");
+            assert.notOk(tagInput.root.is(".styled"), "default styling not applied");
         });
 
         QUnit.test("Set Placeholder Text", function(assert) {
@@ -61,7 +61,7 @@ $(document).ready(function() {
 
             let tagInput = this.input.data("tagInput");
             assert.propEqual(tagInput.options, options, "options applied");
-            assert.propEqual(tagInput.input.attr("placeholder"), testPlaceholderText, "successfully set placeholder text");
+            assert.deepEqual(tagInput.input.attr("placeholder"), testPlaceholderText, "successfully set placeholder text");
         });
 
         QUnit.test("Set Class Names", function(assert) {
@@ -108,7 +108,134 @@ $(document).ready(function() {
             let tagInput = this.input.data("tagInput");
 
             assert.propEqual(tagInput.options, options, "options applied");
-            assert.ok(tagInput.root.find(".twitter-typeahead").length, "typeahead instatiated");
+            assert.deepEqual(tagInput.root.find(".twitter-typeahead").length, 1, "typeahead instatiated");
+        });
+    });
+
+    QUnit.module("Class Functionality", function(hooks) {
+        hooks.beforeEach(function(assert) {
+            let input = $(globals.inputQuery);
+            input.tagInput();
+            this.tagInput = input.data("tagInput");
+        });
+
+        QUnit.module("Add Tag", function(hooks) {
+
+            hooks.beforeEach(function(assert) {
+                this.testTagNames = [];
+            });
+
+            hooks.afterEach(function(assert) {
+                this.testTagNames.forEach((name) => {
+                    assert.deepEqual(this.tagInput.root.find(`span:contains("${name}")`).length, 1, `successfully added tag "${name}" to html`);
+                });
+            });
+
+            QUnit.test("Add First Tag", function(assert) {
+                this.testTagNames = [
+                    "test_1"
+                ];
+
+                assert.ok(this.tagInput.addTag(this.testTagNames[0]), "successfully added first tag");
+            });
+
+            QUnit.test("Add Duplicate Tag", function(assert) {
+                this.testTagNames = [
+                    "test_1"
+                ];
+
+                assert.ok(this.tagInput.addTag(this.testTagNames[0]), "successfully added first tag");
+                assert.notOk(this.tagInput.addTag(this.testTagNames[0]), "duplicate tag was not added");
+            });
+
+            QUnit.test("Add Multiple Tags", function(assert) {
+                this.testTagNames = [
+                    "test_1",
+                    "test_2",
+                    "test_3"
+                ];
+
+                assert.ok(this.tagInput.addTag(this.testTagNames[0]), "successfully added first tag");
+                assert.ok(this.tagInput.addTag(this.testTagNames[1]), "successfully added second tag");
+                assert.ok(this.tagInput.addTag(this.testTagNames[2]), "successfully added third tag");
+            });
+        });
+
+        QUnit.module("Remove Tag", function(hooks) {
+            this.testTagNames = [
+                "test_1",
+                "test_2",
+                "test_3"
+            ];
+
+            hooks.afterEach(function(assert) {
+                this.testTagNames.forEach((name) => {
+                    assert.deepEqual(this.tagInput.root.find(`span:contains("${name}")`).length, 0, `success, tag "${name}" does not exist in html`);
+                });
+            });
+
+            QUnit.test("Remove Non-Existent Tag", function(assert) {
+                assert.notOk(this.tagInput.removeTag(this.testTagNames[0]), "non-existent tag was not removed");
+            });
+
+            QUnit.test("Remove Only Tag", function(assert) {
+                this.tagInput.addTag(this.testTagNames[0]);
+                assert.ok(this.tagInput.removeTag(this.testTagNames[0]), "successfully removed only tag");
+            });
+
+            QUnit.test("Remove Multiple Tags", function(assert) {
+                this.testTagNames.forEach((name) => {
+                    this.tagInput.addTag(name);
+                });
+
+                this.testTagNames.forEach((name) => {
+                    assert.ok(this.tagInput.removeTag(name), `successfully remove tag "${name}"`);
+                });
+            });
+        });
+
+        QUnit.test("Get Tags", function(assert) {
+            let testTagNames = [
+                "test_1",
+                "test_2",
+                "test_3"
+            ];
+
+            testTagNames.forEach((name) => {
+                this.tagInput.addTag(name);
+            });
+
+            assert.deepEqual(this.tagInput.getTags().length, testTagNames.length, "number of tags returned is correct");
+        });
+    });
+
+    QUnit.module("User Interaction", function(hooks) {
+        QUnit.module("Without Typeahead", function(hooks) {
+            hooks.beforeEach(function(assert) {
+                let input = $(globals.inputQuery);
+                input.tagInput();
+                this.tagInput = input.data("tagInput");
+            });
+
+            QUnit.test("Clicking Root Gives Input Focus", function(assert) {
+                assert.notOk(this.tagInput.input.is(":focus"), "input does not have focus before click on root");
+                this.tagInput.root.click();
+                assert.ok(this.tagInput.input.is(":focus"), "input has focus after click on root");
+            });
+
+            QUnit.test("Add Tag Through Input", function(assert) {
+                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                this.tagInput.input.val("test_tag").change();
+                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+            });
+
+            QUnit.test("Click Tag to Remove", function(assert) {
+                this.tagInput.addTag("test_tag");
+                let tag = this.tagInput.getTags()[0];
+                assert.ok(tag, "tag is present");
+                tag.click();
+                assert.deepEqual(this.tagInput.getTags().length, 0, "successfully removed tag with click");
+            });
         });
     });
 });
