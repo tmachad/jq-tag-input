@@ -237,5 +237,53 @@ $(document).ready(function() {
                 assert.deepEqual(this.tagInput.getTags().length, 0, "successfully removed tag with click");
             });
         });
+
+        QUnit.module("With Typeahead", function(hooks){
+            hooks.beforeEach(function(assert) {
+                let input = $(globals.inputQuery);
+                input.tagInput({
+                    typeaheadjs: {
+                        datasets: [
+                            {
+                                name: "test_tags",
+                                source: function(query, callback) {
+                                    let regex = new RegExp(query, "i");
+
+                                    let values = [
+                                        "Test",
+                                        "Potato",
+                                        "Hello",
+                                        "World",
+                                        "Tomato",
+                                        "Watermelon"
+                                    ];
+
+                                    callback(values.filter((value) => regex.test(value)));
+                                }
+                            }
+                        ]
+                    }
+                });
+                this.tagInput = input.data("tagInput");
+            });
+
+            QUnit.test("Add Tag Through Autocomplete", function(assert) {
+                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                this.tagInput.input.trigger("typeahead:autocomplete", "Test");
+                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+            });
+
+            QUnit.test("Add Tag Through Suggestion Selection", function(assert) {
+                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                this.tagInput.input.trigger("typeahead:select", "Test");
+                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+            });
+
+            QUnit.test("Add Tag Through Input", function(assert) {
+                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                this.tagInput.input.typeahead("val", "Test").change();
+                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+            });
+        });
     });
 });
