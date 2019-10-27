@@ -90,7 +90,7 @@
                 this.tags.push(tag);
                 this.root.children().last().before(tag.element);
                 this.updateReplacedInputValue();
-
+                this.replacedInput.trigger($.fn.tagInput.globals.customEvents.addTag, tag.text);
                 return true;
             }
 
@@ -104,6 +104,7 @@
                 tag.element.remove();
                 this.tags = this.tags.filter((t) => t.text !== tag.text);
                 this.updateReplacedInputValue();
+                this.replacedInput.trigger($.fn.tagInput.globals.customEvents.removeTag, tag.text);
             }
 
             return tag !== undefined;
@@ -136,5 +137,12 @@
         useDefaultStyle: true,
         placeholderText: "",
         typeaheadjs: false
+    };
+
+    $.fn.tagInput.globals = {
+        customEvents: {
+            addTag: "tagInput:addTag",
+            removeTag: "tagInput:removeTag"
+        }
     };
 }));

@@ -71,5 +71,5 @@ $("#my-input").tagInput({
 The following events are triggered at various times on the original input used to create the tag input.
 
 * `change` - The normal change event you're likely familiar with. Fired every time a tag is added or removed.
-* `tagInput:addTag` - TODO when this is a thing
-* `tagInput:removeTag` - TODO when this is a thing
+* `tagInput:addTag` - Fires whenever a tag is successfully added to the tag input. The event handler will be invoked with 2 arguments: the jQuery event object, and the name of the tag that was added.
+* `tagInput:removeTag` - Fires whenever a tag is successfully removed from the tag input. The event handler will be invoked with 2 arguments: the jQuery event object, and the name of the tag that was removed.

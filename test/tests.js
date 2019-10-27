@@ -286,4 +286,112 @@ $(document).ready(function() {
             });
         });
     });
+
+    QUnit.module("Events", function(hooks) {
+        hooks.beforeEach(function(assert) {
+            let input = $(globals.inputQuery);
+            input.tagInput();
+            this.tagInput = input.data("tagInput");
+        });  
+
+        QUnit.module("Adding Tag", function(hooks) {
+            QUnit.test("Triggers Change When Tag is Added", function(assert) {
+                let testTagName = "test_tag";
+
+                assert.expect(3);
+                this.tagInput.replacedInput.change(() => {
+                    assert.step("change event triggered");
+                    assert.deepEqual(this.tagInput.replacedInput.val(), testTagName, "replaced input value matches added tag");
+                });
+                this.tagInput.addTag(testTagName);
+                assert.verifySteps(["change event triggered"]);
+            });
+
+            QUnit.test("Does Not Trigger Change When Tag is Duplicate", function(assert) {
+                let testTagName = "test_tag";
+
+                this.tagInput.addTag(testTagName);
+
+                assert.expect(0);
+                this.tagInput.replacedInput.change(() => {
+                    assert.step("change event triggered");
+                });
+                this.tagInput.addTag(testTagName);
+            });
+
+            QUnit.test("Triggers tagInput:addTag When Tag is Added", function(assert) {
+                let testTagName = "test_tag";
+
+                assert.expect(3);
+                this.tagInput.replacedInput.on("tagInput:addTag", (event, tag) => {
+                    assert.step("tagInput:addTag event triggered");
+                    assert.deepEqual(tag, testTagName, "passed tag name matches added tag");
+                });
+                this.tagInput.addTag(testTagName);
+                assert.verifySteps(["tagInput:addTag event triggered"]);
+            });
+
+            QUnit.test("Does Not Trigger tagInput:addTag When Tag is Duplicate", function(assert) {
+                let testTagName = "test_tag";
+
+                this.tagInput.addTag(testTagName);
+
+                assert.expect(0);
+                this.tagInput.replacedInput.on("tagInput:addTag", (event, tag) => {
+                    assert.step("tagInput:addTag event triggered");
+                });
+                this.tagInput.addTag(testTagName);
+            });
+        });
+
+        QUnit.module("Removing Tag", function(hooks) {
+            QUnit.test("Triggers Change When Tag Exists", function(assert) {
+                let testTagName = "test_tag";
+
+                this.tagInput.addTag(testTagName);
+
+                assert.expect(3);
+                this.tagInput.replacedInput.change(() => {
+                    assert.step("change event triggered");
+                    assert.deepEqual(this.tagInput.replacedInput.val(), "", "replaced input does not include removed tag");
+                });
+                this.tagInput.removeTag(testTagName);
+                assert.verifySteps(["change event triggered"]);
+            });
+
+            QUnit.test("Does Not Trigger Change When Tag Does Not Exist", function(assert) {
+                let testTagName = "test_tag";
+
+                assert.expect(0);
+                this.tagInput.replacedInput.change(() => {
+                    assert.step("change event triggered");
+                });
+                this.tagInput.removeTag(testTagName);
+            });
+
+            QUnit.test("Triggers tagInput:removeTag When Tag Exists", function(assert) {
+                let testTagName = "test_tag";
+
+                this.tagInput.addTag(testTagName);
+
+                assert.expect(3);
+                this.tagInput.replacedInput.on("tagInput:removeTag", (event, tag) => {
+                    assert.step("tagInput:removeTag event triggered");
+                    assert.deepEqual(tag, testTagName, "passed tag name matches removed tag");
+                });
+                this.tagInput.removeTag(testTagName);
+                assert.verifySteps(["tagInput:removeTag event triggered"]);
+            });
+
+            QUnit.test("Does Not Trigger tagInput:removeTag When Tag Does Not Exist", function(assert) {
+                let testTagName = "test_tag";
+
+                assert.expect(0);
+                this.tagInput.replacedInput.change((event, tag) => {
+                    assert.step("tagInput:removeTag event triggered");
+                });
+                this.tagInput.removeTag(testTagName);
+            });
+        });
+    });
 });
