@@ -17,8 +17,8 @@ A jquery plugin for converting a normal text input into a tag input. Supports ty
 
 ## Commands
 
-* `npm build` - TODO
-* `npm test` - Run all test suites. Opens `test/testingground.html` in the browser, which runs the tests using QUnit. Dev dependencies must be installed before running.
+* `npm run build` - Builds to source and outputs the minified package to the `dist` folder.
+* `npm run test` - Run all test suites. Opens `test/testingground.html` in the browser, which runs the tests using QUnit.
 
 ## Usage
 
