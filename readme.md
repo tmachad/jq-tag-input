@@ -31,6 +31,7 @@ The `TagInput` object attached to the input can be accessed through `$("#my-inpu
 
 * `addTag(string):boolean` - Adds a new tag with the given text to the end of the list of tags if it doesn't already exist. Returns `true` if the tag was added successfully, or `false` if no tag was added.
 * `removeTag(string):boolean` - Removes the tag with the given text from the list of tags if it exists. Returns `true` if the tag was removed successfully, or `false` if no tag was removed.
+* `getTags():string[]` - Returns an array containing the text of each tag in the order they were added.
 
 ### Configuration
 

@@ -80,7 +80,7 @@ $(document).ready(function() {
             let tagInput = this.input.data("tagInput");
 
             tagInput.addTag("test-tag");
-            let tag = tagInput.getTags()[0];
+            let tag = tagInput.tags[0].element;
 
             assert.propEqual(tagInput.options, options, "options applied");
             assert.ok(tagInput.root.hasClass(testClassNames.overall), "overall class name applied");
@@ -194,18 +194,32 @@ $(document).ready(function() {
             });
         });
 
-        QUnit.test("Get Tags", function(assert) {
-            let testTagNames = [
-                "test_1",
-                "test_2",
-                "test_3"
-            ];
-
-            testTagNames.forEach((name) => {
-                this.tagInput.addTag(name);
+        QUnit.module("Get Tags", function(hooks) {
+            hooks.beforeEach(function(assert) {
+                this.testTagNames = [
+                    "test_1",
+                    "test_2",
+                    "test_3"
+                ];
             });
 
-            assert.deepEqual(this.tagInput.getTags().length, testTagNames.length, "number of tags returned is correct");
+            QUnit.test("Number of Tags Returned is Correct", function(assert) {
+                this.testTagNames.forEach((name) => {
+                    this.tagInput.addTag(name);
+                });
+    
+                assert.deepEqual(this.tagInput.getTags().length, this.testTagNames.length, "number of tags returned is correct");
+            });
+
+            QUnit.test("Tags are Returned in Same Order", function(assert) {
+                this.testTagNames.forEach((name) => {
+                    this.tagInput.addTag(name);
+                });
+
+                this.testTagNames.forEach((name, index) => {
+                    assert.deepEqual(this.tagInput.getTags()[index], name, `tag at position ${index} matches`);
+                });
+            });
         });
     });
 
@@ -231,7 +245,7 @@ $(document).ready(function() {
 
             QUnit.test("Click Tag to Remove", function(assert) {
                 this.tagInput.addTag("test_tag");
-                let tag = this.tagInput.getTags()[0];
+                let tag = this.tagInput.tags[0].element;
                 assert.ok(tag, "tag is present");
                 tag.click();
                 assert.deepEqual(this.tagInput.getTags().length, 0, "successfully removed tag with click");

@@ -115,7 +115,7 @@
         }
 
         getTags() {
-            return this.tags.map((tag) => tag.element);
+            return this.tags.map((tag) => tag.text);
         }
     }
 
