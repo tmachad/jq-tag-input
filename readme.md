@@ -10,6 +10,7 @@ A jquery plugin for converting a normal text input into a tag input. Supports ty
   * [API](#API)
   * [Configuration](#Configuration)
   * [Events](#Events)
+  * [Styling Tips and Tricks](#Styling-Tips-and-Tricks)
 * [Browser Support](#Browser-Support)
 * [Versioning](#Versioning)
 
@@ -76,6 +77,13 @@ The following events are triggered at various times on the original input used t
 * `change` - The normal change event you're likely familiar with. Fired every time a tag is added or removed.
 * `tagInput:addTag` - Fires whenever a tag is successfully added to the tag input. The event handler will be invoked with 2 arguments: the jQuery event object, and the name of the tag that was added.
 * `tagInput:removeTag` - Fires whenever a tag is successfully removed from the tag input. The event handler will be invoked with 2 arguments: the jQuery event object, and the name of the tag that was removed.
+
+### Styling Tips and Tricks
+
+The `<div>` containing the tags and the input field is a flexbox, so you can use all of the powerful features of flexbox for your styling. For example:
+
+* By default tags all appear in the same order they were added in, but you can make them appear in a different order by setting the `order` style.
+* By default tags are left-aligned, but this can be changed by setting the `justify-content` style on the parent `<div>`.
 
 ## Browser Support
 

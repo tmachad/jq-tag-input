@@ -13,6 +13,7 @@
     > .tag {
         flex-shrink: 0;
         cursor: pointer;
+        align-self: center;
 
         > .delete-tag {
             padding-left: 0.25rem;
