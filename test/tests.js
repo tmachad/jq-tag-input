@@ -40,7 +40,7 @@ $(document).ready(function() {
         });
 
         QUnit.test("Disable Default Styling", function(assert) {
-            let options = Object.assign({}, $.fn.tagInput.defaults, {
+            let options = $.extend({}, $.fn.tagInput.defaults, {
                 useDefaultStyle: false
             });
 
@@ -53,7 +53,7 @@ $(document).ready(function() {
 
         QUnit.test("Set Placeholder Text", function(assert) {
             let testPlaceholderText = "Placeholder";
-            let options = Object.assign({}, $.fn.tagInput.defaults, {
+            let options = $.extend({}, $.fn.tagInput.defaults, {
                 placeholderText: testPlaceholderText
             });
 
@@ -71,7 +71,7 @@ $(document).ready(function() {
                 tagDelete: "test-delete-tag",
                 input: "test-input"
             };
-            let options = Object.assign({}, $.fn.tagInput.defaults, {
+            let options = $.extend({}, $.fn.tagInput.defaults, {
                 classNames: testClassNames
             });
 
@@ -90,7 +90,7 @@ $(document).ready(function() {
         });
 
         QUnit.test("Enable Typeahead", function(assert) {
-            let options = Object.assign({}, $.fn.tagInput.defaults, {
+            let options = $.extend({}, $.fn.tagInput.defaults, {
                 typeaheadjs: {
                     datasets: [
                         {
@@ -107,7 +107,6 @@ $(document).ready(function() {
 
             let tagInput = this.input.data("tagInput");
 
-            assert.propEqual(tagInput.options, options, "options applied");
             assert.deepEqual(tagInput.root.find(".twitter-typeahead").length, 1, "typeahead instatiated");
         });
     });

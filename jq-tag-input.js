@@ -120,7 +120,7 @@
     }
 
     $.fn.tagInput = function(options) {
-        options = Object.assign({}, $.fn.tagInput.defaults, options);
+        options = $.extend(true, {}, $.fn.tagInput.defaults, options);
 
         return this.each(function() {
             $(this).data("tagInput", new TagInput($(this), options));
