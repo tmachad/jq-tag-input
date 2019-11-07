@@ -18,6 +18,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
+                sh 'npm login'
 				sh 'npm publish dist'
             }
         }
