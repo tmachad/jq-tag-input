@@ -19,7 +19,7 @@ pipeline {
                 echo 'Deploying..'
                 withCredentials([
                     usernamePassword(credentialsId: '58862aae-835a-4432-afcb-77cacde5486e', usernameVariable: 'NPM_USER', passwordVariable: 'NPM_PASS'),
-                    string(crentialsId: '42ee0f7f-ea19-4adf-9135-3bbb64e0e76b', variable: 'NPM_EMAIL')
+                    string(credentialsId: '42ee0f7f-ea19-4adf-9135-3bbb64e0e76b', variable: 'NPM_EMAIL')
                     ]) {
                     sh 'npm-cli-login'
                 }
