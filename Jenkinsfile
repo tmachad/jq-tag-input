@@ -6,6 +6,7 @@ pipeline {
             steps {
                 echo 'Building..'
                 sh 'npm install'
+                sh 'mkdir dist'
                 sh 'npm run build'
             }
         }

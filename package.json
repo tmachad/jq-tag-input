@@ -4,7 +4,7 @@
   "description": "A JQuery plugin for creating tag input fields.",
   "main": "jq-tag-input.js",
   "scripts": {
-    "build": "sass jq-tag-input.scss jq-tag-input.css && minify jq-tag-input.js > dist/jq-tag-input.min.js && minify jq-tag-input.css > dist/jq-tag-input.min.css && cpx {package.json,readme.md} dist",
+    "build": "mkdirp dist && sass jq-tag-input.scss jq-tag-input.css && minify jq-tag-input.js > dist/jq-tag-input.min.js && minify jq-tag-input.css > dist/jq-tag-input.min.css && cpx {package.json,readme.md} dist",
     "test": "open-cli ./test/testingground.html"
   },
   "author": "Tom Machado",
@@ -16,6 +16,7 @@
   "devDependencies": {
     "cpx": "^1.5.0",
     "minify": "^4.1.3",
+    "mkdirp": "^0.5.1",
     "open-cli": "^5.0.0",
     "qunit": "^2.9.3",
     "sass": "^1.23.1"
