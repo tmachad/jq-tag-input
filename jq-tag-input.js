@@ -25,6 +25,17 @@
         factory(jQuery);
     }
 }(function($) {
+
+    /**
+     * Represents a TagInput element within the DOM. A regular input element is converted to a TagInput using
+     * `$(input).tagInput(options)`. For more information on options, see the readme file shipped with this plugin
+     * or find it at https://github.com/tmachad/jq-tag-input.
+     * 
+     * The TagInput object can be accessed for this element using `$(input).data("tagInput")`. The object provides
+     * several methods that can be used to inspect and modify the tags it holds.
+     *
+     * @class TagInput
+     */
     class TagInput {
         constructor(replacedInput, options) {
             this.tags = [];
@@ -73,12 +84,23 @@
             this.replacedInput.before(this.root);
         }
 
+        /**
+         * Adds a tag with the given text to the tag input. If a tag with the given text already exists no tag is added
+         * and `false` is returned.
+         *
+         * @param {string} tagText
+         * @returns A boolean indicating if the tag was successfully added to the input.
+         * @memberof TagInput
+         */
         addTag(tagText) {
             if (tagText !== "" && !this.tags.find((t) => t.text === tagText)) {
                 let tag = {
                     text: tagText,
                     element: $($.parseHTML(
-                        `<span class="${this.options.classNames.tag}">${tagText}<span class="${this.options.classNames.tagDelete}">&times;</span></span>`
+                        `<span class="${this.options.classNames.tag}">
+                            ${tagText}
+                            <span class="${this.options.classNames.tagDelete}">&times;</span>
+                        </span>`
                     ))
                 };
 
@@ -97,6 +119,14 @@
             return false;
         }
 
+        /**
+         * Removes the tag with the given text from the input. If a tag with that tag text does not exist no tags
+         * are removed and `false` is returned.
+         *
+         * @param {string} tagText
+         * @returns A boolean indicating if the tag was successfully removed from the input.
+         * @memberof TagInput
+         */
         removeTag(tagText) {
             let tag = this.tags.find((t) => t.text === tagText);
 
@@ -110,10 +140,22 @@
             return tag !== undefined;
         }
 
+        /**
+         * Triggers a change update in the input that was replaced to make this tag input.
+         *
+         * @memberof TagInput
+         * @private
+         */
         updateReplacedInputValue() {
             this.replacedInput.val(this.tags.map((tag) => tag.text).join(",")).change();
         }
 
+        /**
+         * Gets the text of the tags contained in the input and returns them as an array in the order they were added.
+         *
+         * @returns An array of strings containing the text of each tag in the order they were added.
+         * @memberof TagInput
+         */
         getTags() {
             return this.tags.map((tag) => tag.text);
         }
