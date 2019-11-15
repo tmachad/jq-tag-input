@@ -2,23 +2,23 @@ $(document).ready(function() {
     let globals = {
         inputQuery: "#tag-input",
         multipleInputQuery: "#tag-input, #tag-input2"
-    }
+    };
 
     QUnit.module("JQuery Integration", function(hooks) {
         QUnit.test("Registration", function(assert) {
             assert.ok($.fn.tagInput, "registered as a jQuery plugin");
         });
-    
+
         QUnit.test("Creation", function(assert) {
             let input = $(globals.inputQuery);
-    
+
             assert.ok(input.tagInput(), "successfully created tag input");
             assert.ok(input.data("tagInput"), "successfully attached tag input to element");
         });
-    
+
         QUnit.test("Chainability", function(assert) {
             let input = $(globals.inputQuery);
-    
+
             assert.ok(input.tagInput().addClass("testing"), "can be chained");
             assert.ok(input.hasClass("testing"), "chained successfully");
         });
@@ -61,7 +61,11 @@ $(document).ready(function() {
 
             let tagInput = this.input.data("tagInput");
             assert.propEqual(tagInput.options, options, "options applied");
-            assert.deepEqual(tagInput.input.attr("placeholder"), testPlaceholderText, "successfully set placeholder text");
+            assert.deepEqual(
+                tagInput.input.attr("placeholder"),
+                testPlaceholderText,
+                "successfully set placeholder text"
+            );
         });
 
         QUnit.test("Set Class Names", function(assert) {
@@ -119,40 +123,35 @@ $(document).ready(function() {
         });
 
         QUnit.module("Add Tag", function(hooks) {
-
             hooks.beforeEach(function(assert) {
                 this.testTagNames = [];
             });
 
             hooks.afterEach(function(assert) {
-                this.testTagNames.forEach((name) => {
-                    assert.deepEqual(this.tagInput.root.find(`span:contains("${name}")`).length, 1, `successfully added tag "${name}" to html`);
+                this.testTagNames.forEach(name => {
+                    assert.deepEqual(
+                        this.tagInput.root.find(`span:contains("${name}")`).length,
+                        1,
+                        `successfully added tag "${name}" to html`
+                    );
                 });
             });
 
             QUnit.test("Add First Tag", function(assert) {
-                this.testTagNames = [
-                    "test_1"
-                ];
+                this.testTagNames = ["test_1"];
 
                 assert.ok(this.tagInput.addTag(this.testTagNames[0]), "successfully added first tag");
             });
 
             QUnit.test("Add Duplicate Tag", function(assert) {
-                this.testTagNames = [
-                    "test_1"
-                ];
+                this.testTagNames = ["test_1"];
 
                 assert.ok(this.tagInput.addTag(this.testTagNames[0]), "successfully added first tag");
                 assert.notOk(this.tagInput.addTag(this.testTagNames[0]), "duplicate tag was not added");
             });
 
             QUnit.test("Add Multiple Tags", function(assert) {
-                this.testTagNames = [
-                    "test_1",
-                    "test_2",
-                    "test_3"
-                ];
+                this.testTagNames = ["test_1", "test_2", "test_3"];
 
                 assert.ok(this.tagInput.addTag(this.testTagNames[0]), "successfully added first tag");
                 assert.ok(this.tagInput.addTag(this.testTagNames[1]), "successfully added second tag");
@@ -161,15 +160,15 @@ $(document).ready(function() {
         });
 
         QUnit.module("Remove Tag", function(hooks) {
-            this.testTagNames = [
-                "test_1",
-                "test_2",
-                "test_3"
-            ];
+            this.testTagNames = ["test_1", "test_2", "test_3"];
 
             hooks.afterEach(function(assert) {
-                this.testTagNames.forEach((name) => {
-                    assert.deepEqual(this.tagInput.root.find(`span:contains("${name}")`).length, 0, `success, tag "${name}" does not exist in html`);
+                this.testTagNames.forEach(name => {
+                    assert.deepEqual(
+                        this.tagInput.root.find(`span:contains("${name}")`).length,
+                        0,
+                        `success, tag "${name}" does not exist in html`
+                    );
                 });
             });
 
@@ -183,11 +182,11 @@ $(document).ready(function() {
             });
 
             QUnit.test("Remove Multiple Tags", function(assert) {
-                this.testTagNames.forEach((name) => {
+                this.testTagNames.forEach(name => {
                     this.tagInput.addTag(name);
                 });
 
-                this.testTagNames.forEach((name) => {
+                this.testTagNames.forEach(name => {
                     assert.ok(this.tagInput.removeTag(name), `successfully remove tag "${name}"`);
                 });
             });
@@ -195,23 +194,23 @@ $(document).ready(function() {
 
         QUnit.module("Get Tags", function(hooks) {
             hooks.beforeEach(function(assert) {
-                this.testTagNames = [
-                    "test_1",
-                    "test_2",
-                    "test_3"
-                ];
+                this.testTagNames = ["test_1", "test_2", "test_3"];
             });
 
             QUnit.test("Number of Tags Returned is Correct", function(assert) {
-                this.testTagNames.forEach((name) => {
+                this.testTagNames.forEach(name => {
                     this.tagInput.addTag(name);
                 });
-    
-                assert.deepEqual(this.tagInput.getTags().length, this.testTagNames.length, "number of tags returned is correct");
+
+                assert.deepEqual(
+                    this.tagInput.getTags().length,
+                    this.testTagNames.length,
+                    "number of tags returned is correct"
+                );
             });
 
             QUnit.test("Tags are Returned in Same Order", function(assert) {
-                this.testTagNames.forEach((name) => {
+                this.testTagNames.forEach(name => {
                     this.tagInput.addTag(name);
                 });
 
@@ -251,7 +250,7 @@ $(document).ready(function() {
             });
         });
 
-        QUnit.module("With Typeahead", function(hooks){
+        QUnit.module("With Typeahead", function(hooks) {
             hooks.beforeEach(function(assert) {
                 let input = $(globals.inputQuery);
                 input.tagInput({
@@ -262,16 +261,9 @@ $(document).ready(function() {
                                 source: function(query, callback) {
                                     let regex = new RegExp(query, "i");
 
-                                    let values = [
-                                        "Test",
-                                        "Potato",
-                                        "Hello",
-                                        "World",
-                                        "Tomato",
-                                        "Watermelon"
-                                    ];
+                                    let values = ["Test", "Potato", "Hello", "World", "Tomato", "Watermelon"];
 
-                                    callback(values.filter((value) => regex.test(value)));
+                                    callback(values.filter(value => regex.test(value)));
                                 }
                             }
                         ]
@@ -298,6 +290,43 @@ $(document).ready(function() {
                 assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
             });
         });
+
+        QUnit.module("Backspace Delete", function(hooks) {
+            hooks.beforeEach(function(assert) {
+                let input = $(globals.inputQuery);
+                input.tagInput({
+                    deleteWithBackspace: true
+                });
+                this.tagInput = input.data("tagInput");
+            });
+
+            QUnit.test("Only Delete If Tag Exists", function(assert) {
+                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before attemting to remove");
+                let event = $.Event("keydown", { which: 8 })
+                this.tagInput.input.trigger(event);
+                assert.deepEqual(this.tagInput.getTags().length, 0, "still no tags after attempting to remove");
+            });
+
+            QUnit.test("Backspace Deletes Last Tag", function(assert) {
+                this.tagInput.addTag("Test 1");
+                this.tagInput.addTag("Test 2");
+                this.tagInput.addTag("Test 3");
+
+                assert.deepEqual(this.tagInput.getTags().length, 3, "three tags before removing last tag");
+                let event = $.Event("keydown", { which: 8 })
+                this.tagInput.input.trigger(event);
+                assert.deepEqual(this.tagInput.getTags().length, 2, "two tags after removing last tag");
+            });
+
+            QUnit.test("Only Delete If Input Is Blank", function(assert) {
+                this.tagInput.addTag("Test 1");
+                this.tagInput.input.val("Test 2");
+                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag before hitting backspace");
+                let event = $.Event("keydown", { which: 8 })
+                this.tagInput.input.trigger(event);
+                assert.deepEqual(this.tagInput.getTags().length, 1, "still one tag after hitting backspace");
+            });
+        });
     });
 
     QUnit.module("Events", function(hooks) {
@@ -305,7 +334,7 @@ $(document).ready(function() {
             let input = $(globals.inputQuery);
             input.tagInput();
             this.tagInput = input.data("tagInput");
-        });  
+        });
 
         QUnit.module("Adding Tag", function(hooks) {
             QUnit.test("Triggers Change When Tag is Added", function(assert) {
@@ -314,7 +343,11 @@ $(document).ready(function() {
                 assert.expect(3);
                 this.tagInput.replacedInput.change(() => {
                     assert.step("change event triggered");
-                    assert.deepEqual(this.tagInput.replacedInput.val(), testTagName, "replaced input value matches added tag");
+                    assert.deepEqual(
+                        this.tagInput.replacedInput.val(),
+                        testTagName,
+                        "replaced input value matches added tag"
+                    );
                 });
                 this.tagInput.addTag(testTagName);
                 assert.verifySteps(["change event triggered"]);
@@ -366,7 +399,11 @@ $(document).ready(function() {
                 assert.expect(3);
                 this.tagInput.replacedInput.change(() => {
                     assert.step("change event triggered");
-                    assert.deepEqual(this.tagInput.replacedInput.val(), "", "replaced input does not include removed tag");
+                    assert.deepEqual(
+                        this.tagInput.replacedInput.val(),
+                        "",
+                        "replaced input does not include removed tag"
+                    );
                 });
                 this.tagInput.removeTag(testTagName);
                 assert.verifySteps(["change event triggered"]);
