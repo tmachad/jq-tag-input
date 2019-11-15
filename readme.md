@@ -48,6 +48,7 @@ $("#my-input").tagInput({
     tagDelete: "delete-tag",
     input: ""
   },
+  deleteWithBackspace: false,
   useDefaultStyle: true,
   placeholderText: "",
   typeaheadjs: {
@@ -65,6 +66,8 @@ $("#my-input").tagInput({
   - `tag` _(Default value `"tag"`)_ determines the class(es) of the tags within the input.
   - `tagDelete` _(Default value `"delete-tag"`)_ determines the class(es) of the delete button on each tag.
   - `input` _(Default value `""`)_ determines the class(es) of the input used to enter new tags.
+
+- `deleteWithBackspace` _(Default value `false`)_ enables using the backspace key to delete the most recently added tag when the input field is empty.
 
 - `useDefaultStyle` _(Default value `true`)_ controls whether or not the default visual styles provided with the CSS file are applied. These styles are only intended for providing a baseline of usability while testing, and are not pretty. Setting `useDefaultStyle` to `false` will disable these styles. This has no effect on the styles used to structure the tag input.
 
