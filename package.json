@@ -1,6 +1,6 @@
 {
   "name": "jq-tag-input",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "description": "A JQuery plugin for creating tag input fields.",
   "main": "jq-tag-input.js",
   "scripts": {

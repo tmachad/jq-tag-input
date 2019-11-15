@@ -55,6 +55,17 @@
                 self.input.focus();
             });
 
+            if (this.options.deleteWithBackspace) {
+                let self = this;
+                this.input.keydown(function(event) {
+                    let keyCode = event.which || event.keyCode;
+                    if (keyCode === 8 && self.input.val() === "" && self.tags.length > 0) {
+                        // Backspace was pressed on empty input and there are tags to delete
+                        self.removeTag(self.tags[self.tags.length - 1].text);
+                    }
+                });
+            }
+
             if (this.options.typeaheadjs) {
                 this.input.typeahead(this.options.typeaheadjs, ...this.options.typeaheadjs.datasets);
 
@@ -180,6 +191,7 @@
             tagDelete: "delete-tag",
             input: ""
         },
+        deleteWithBackspace: false,
         useDefaultStyle: true,
         placeholderText: "",
         typeaheadjs: false

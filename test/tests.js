@@ -290,6 +290,43 @@ $(document).ready(function() {
                 assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
             });
         });
+
+        QUnit.module("Backspace Delete", function(hooks) {
+            hooks.beforeEach(function(assert) {
+                let input = $(globals.inputQuery);
+                input.tagInput({
+                    deleteWithBackspace: true
+                });
+                this.tagInput = input.data("tagInput");
+            });
+
+            QUnit.test("Only Delete If Tag Exists", function(assert) {
+                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before attemting to remove");
+                let event = $.Event("keydown", { which: 8 })
+                this.tagInput.input.trigger(event);
+                assert.deepEqual(this.tagInput.getTags().length, 0, "still no tags after attempting to remove");
+            });
+
+            QUnit.test("Backspace Deletes Last Tag", function(assert) {
+                this.tagInput.addTag("Test 1");
+                this.tagInput.addTag("Test 2");
+                this.tagInput.addTag("Test 3");
+
+                assert.deepEqual(this.tagInput.getTags().length, 3, "three tags before removing last tag");
+                let event = $.Event("keydown", { which: 8 })
+                this.tagInput.input.trigger(event);
+                assert.deepEqual(this.tagInput.getTags().length, 2, "two tags after removing last tag");
+            });
+
+            QUnit.test("Only Delete If Input Is Blank", function(assert) {
+                this.tagInput.addTag("Test 1");
+                this.tagInput.input.val("Test 2");
+                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag before hitting backspace");
+                let event = $.Event("keydown", { which: 8 })
+                this.tagInput.input.trigger(event);
+                assert.deepEqual(this.tagInput.getTags().length, 1, "still one tag after hitting backspace");
+            });
+        });
     });
 
     QUnit.module("Events", function(hooks) {
