@@ -291,6 +291,85 @@ $(document).ready(function() {
             });
         });
 
+        QUnit.module("With Typeahead Exact Match", function(hooks) {
+            hooks.beforeEach(function(assert) {
+                let input = $(globals.inputQuery);
+
+                let dataset_1 = [
+                    "Sasquatch",
+                    "Tower",
+                    "Ocean",
+                    "Hungry"
+                ];
+                let datasource_1 = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.whitespace,
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    local: dataset_1
+                });
+
+                let dataset_2 = [
+                    "Test", 
+                    "Potato", 
+                    "Hello", 
+                    "World", 
+                    "Tomato", 
+                    "Watermelon"
+                ];
+                let datasource_2 = function(query, callback) {
+                    let regex = new RegExp(query, "i");
+                    callback(dataset_2.filter(value => regex.test(value)));
+                }
+
+                input.tagInput({
+                    typeaheadjs: {
+                        exactMatchOnly: true,
+                        datasets: [
+                            {
+                                name: "dataset_1",
+                                source: datasource_1
+                            },
+                            {
+                                name: "dataset_2",
+                                source: datasource_2
+                            }
+                        ]
+                    }
+                });
+                this.tagInput = input.data("tagInput");
+            });
+
+            QUnit.test("Can Add Tag From Function Dataset", function(assert) {
+                let done = assert.async();
+                this.tagInput.replacedInput.on("tagInput:addTag", () => {
+                    assert.deepEqual(this.tagInput.tags.length, 1, "tag was added successfully");
+                    done();
+                });
+
+                this.tagInput.input.typeahead("val", "Test").change();
+            });
+
+            QUnit.test("Can Add Tag From Bloodhound Dataset", function(assert) {
+                let done = assert.async();
+                this.tagInput.replacedInput.on("tagInput:addTag", () => {
+                    assert.deepEqual(this.tagInput.tags.length, 1, "tag was added successfully");
+                    done();
+                });
+
+                this.tagInput.input.typeahead("val", "Tower").change();
+            });
+
+            QUnit.test("Cannot Add Tag Outside Of Datasets", function(assert) {
+                let done = assert.async();
+                this.tagInput.replacedInput.on("tagInput:addTag", () => {
+                    assert.deepEqual(this.tagInput.tags.length, 1, "only one tag was added");
+                    done();
+                });
+
+                this.tagInput.input.typeahead("val", "Nonexistent Tag").change();
+                this.tagInput.input.typeahead("val", "Tower").change();
+            });
+        })
+
         QUnit.module("Backspace Delete", function(hooks) {
             hooks.beforeEach(function(assert) {
                 let input = $(globals.inputQuery);

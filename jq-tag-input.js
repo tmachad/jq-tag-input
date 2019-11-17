@@ -73,9 +73,45 @@
                     if (!suggestion) {
                         // Suggestion is undefined, so retrieve it from input field
                         suggestion = self.input.typeahead("val");
+
+                        if (self.options.typeaheadjs.exactMatchOnly) {
+                            // Check if the suggestion retrieved from input is an exact match to one in a dataset
+                            // We only need to check in this case because if 'suggestion' isn't provided then it
+                            // wasn't coming from the typeahaed
+                            console.log("trying to match on exact match");
+                            let queries = [];
+                            self.options.typeaheadjs.datasets.forEach(dataset => {
+                                // Get source from dataset
+                                // Check for __ttAdapter to see if it's a Bloodhound source or just a function
+                                let source = dataset.source.__ttAdapter ? dataset.source.__ttAdapter() : dataset.source;
+
+                                queries.push(new Promise((resolve, reject) => source(suggestion, resolve, resolve)));
+                            });
+
+                            Promise.all(queries).then(results => {
+                                console.log(`fetched results from ${results.length} datasets`);
+                                let suggestionSet = new Set();
+                                results.forEach(result => {
+                                    result.forEach(s => {
+                                        suggestionSet.add(s);
+                                    });
+                                });
+
+                                let suggestions = Array.from(suggestionSet);
+                                console.log(`Got ${suggestions.length} suggestions`);
+                                if (suggestions.includes(suggestion) && self.addTag(suggestion)) {
+                                    console.log(`Found exact match for ${suggestion}`);
+                                    self.input.typeahead("val", "");
+                                }
+                            });
+                        }
                     }
 
-                    if (self.addTag(suggestion)) {
+                    if (
+                        ((self.options.typeaheadjs.exactMatchOnly && event.type !== "change") || // exact match is enabled and event isn't 'change'
+                            !self.options.typeaheadjs.exactMatchOnly) && // OR exact match is disabled
+                        self.addTag(suggestion) // then add tag
+                    ) {
                         self.input.typeahead("val", "");
                     }
                 };
