@@ -53,6 +53,7 @@ $("#my-input").tagInput({
   placeholderText: "",
   typeaheadjs: {
     // See typeahead.js docs for options
+    exactMatchOnly: false,
     datasets: [
       // See typeahead.js docs for dataset syntax
     ]
@@ -73,7 +74,10 @@ $("#my-input").tagInput({
 
 - `placeholderText` _(Default value `""`)_ determines the placeholder text in the tag input.
 
-- `typeaheadjs` _(Default value `false`)_ controls typeahead functionality and provides options for the typeaheadjs plugin. To enable typeahead functionality you must provided at least one dataset through the `datasets` property. Options are passed directly to the typeaheadjs plugin without modification, so any options it supports will be supported here.
+- `typeaheadjs` _(Default value `false`)_ controls typeahead functionality and provides options for the typeaheadjs plugin. Options are passed directly to the typeaheadjs plugin without modification, so any options it supports will be supported here.
+
+  - `exactMatchOnly` controls whether or not entered tags must be an exact match to a tag from one or more datasets. `addTag()` will not obey this restriction.
+  - `datasets` contains an array of all of the datasets that you want to pass to the typeahead plugin. The datasets are passed unaltered to the typeahead plugin.
 
 ### Events
 
