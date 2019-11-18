@@ -30,11 +30,13 @@ A jquery plugin for converting a normal text input into a tag input. Supports ty
 
 ### API
 
-The `TagInput` object attached to the input can be accessed through `$("#my-input").data("tagInput")`, and provides the following methods:
+Several methods for interacting with the tag input are provided with this plugin:
 
-- `addTag(string):boolean` - Adds a new tag with the given text to the end of the list of tags if it doesn't already exist. Returns `true` if the tag was added successfully, or `false` if no tag was added.
-- `removeTag(string):boolean` - Removes the tag with the given text from the list of tags if it exists. Returns `true` if the tag was removed successfully, or `false` if no tag was removed.
-- `getTags():string[]` - Returns an array containing the text of each tag in the order they were added.
+- `$(input).tagInput("addTag", "tagtext")` - Adds a new tag with the given text to the end of the list of tags if it doesn't already exist. Returns `true` if the tag was added successfully, or `false` if no tag was added.
+- `$(input).tagInput("removeTag", "tagtext")` - Removes the tag with the given text from the list of tags if it exists. Returns `true` if the tag was removed successfully, or `false` if no tag was removed.
+- `$(input).tagInput("getTags")` - Returns an array containing the text of each tag in the order they were added.
+
+_Note: With V1.4.0 directly accessing the `TagInput` object is no longer the preferred method of interacting with the tag input. The old API still exists and remains unchanged for backwards compatibility, but you should probably still update to the new API._
 
 ### Configuration
 
