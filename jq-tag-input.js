@@ -212,8 +212,33 @@
         }
     }
 
-    $.fn.tagInput = function(options) {
-        options = $.extend(true, {}, $.fn.tagInput.defaults, options);
+    let methods = {
+        init: function(options) {
+            options = $.extend(true, {}, $.fn.tagInput.defaults, options);
+            this.data("tagInput", new TagInput(this, options));
+        },
+        addTag: function(tagText) {
+            return this.data("tagInput").addTag(tagText);
+        },
+        removeTag: function(tagText) {
+            return this.data("tagInput").removeTag(tagText);
+        },
+        getTags: function() {
+            return this.data("tagInput").getTags();
+        }
+    }
+
+    $.fn.tagInput = function(method) {
+        if (methods[method]) {
+            // method param is the name of a function to call
+            return methods[method].apply($(this), [].slice.call(arguments, 1));
+        } else {
+            let args = arguments;
+            // Iterate through all selected elements and initialize them
+            return this.each(function() {
+                methods.init.apply($(this), args);
+            });
+        }
 
         return this.each(function() {
             $(this).data("tagInput", new TagInput($(this), options));

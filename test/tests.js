@@ -22,6 +22,31 @@ $(document).ready(function() {
             assert.ok(input.tagInput().addClass("testing"), "can be chained");
             assert.ok(input.hasClass("testing"), "chained successfully");
         });
+
+        QUnit.module("API", function(hooks) {
+            hooks.beforeEach(function(assert) {
+                this.input = $(globals.inputQuery);
+                this.input.tagInput();
+                this.tagInput = this.input.data("tagInput");
+            });
+
+            QUnit.test("Add Tag", function(assert) {
+                assert.ok(this.input.tagInput("addTag", "Test"), "tag added successfully");
+                assert.deepEqual(this.tagInput.tags.length, 1, "one tag in input");
+            });
+
+            QUnit.test("Remove Tag", function(assert) {
+                this.tagInput.addTag("Test");
+                assert.ok(this.input.tagInput("removeTag", "Test"), "tag removed successfully");
+                assert.deepEqual(this.tagInput.tags.length, 0, "no tags in input");
+            });
+
+            QUnit.test("Get Tags", function(assert) {
+                this.tagInput.addTag("Test_1");
+                this.tagInput.addTag("Test_2");
+                assert.deepEqual(this.input.tagInput("getTags"), ["Test_1", "Test_2"], "tags retrieved successfully");
+            });
+        })
     });
 
     QUnit.module("Options", function(hooks) {
@@ -236,9 +261,9 @@ $(document).ready(function() {
             });
 
             QUnit.test("Add Tag Through Input", function(assert) {
-                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 0, "no tags before adding tag");
                 this.tagInput.input.val("test_tag").change();
-                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 1, "one tag after adding tag");
             });
 
             QUnit.test("Click Tag to Remove", function(assert) {
@@ -246,7 +271,7 @@ $(document).ready(function() {
                 let tag = this.tagInput.tags[0].element;
                 assert.ok(tag, "tag is present");
                 tag.click();
-                assert.deepEqual(this.tagInput.getTags().length, 0, "successfully removed tag with click");
+                assert.deepEqual(this.tagInput.tags.length, 0, "successfully removed tag with click");
             });
         });
 
@@ -273,21 +298,21 @@ $(document).ready(function() {
             });
 
             QUnit.test("Add Tag Through Autocomplete", function(assert) {
-                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 0, "no tags before adding tag");
                 this.tagInput.input.trigger("typeahead:autocomplete", "Test");
-                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 1, "one tag after adding tag");
             });
 
             QUnit.test("Add Tag Through Suggestion Selection", function(assert) {
-                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 0, "no tags before adding tag");
                 this.tagInput.input.trigger("typeahead:select", "Test");
-                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 1, "one tag after adding tag");
             });
 
             QUnit.test("Add Tag Through Input", function(assert) {
-                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 0, "no tags before adding tag");
                 this.tagInput.input.typeahead("val", "Test").change();
-                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag after adding tag");
+                assert.deepEqual(this.tagInput.tags.length, 1, "one tag after adding tag");
             });
         });
 
@@ -380,10 +405,10 @@ $(document).ready(function() {
             });
 
             QUnit.test("Only Delete If Tag Exists", function(assert) {
-                assert.deepEqual(this.tagInput.getTags().length, 0, "no tags before attemting to remove");
+                assert.deepEqual(this.tagInput.tags.length, 0, "no tags before attemting to remove");
                 let event = $.Event("keydown", { which: 8 })
                 this.tagInput.input.trigger(event);
-                assert.deepEqual(this.tagInput.getTags().length, 0, "still no tags after attempting to remove");
+                assert.deepEqual(this.tagInput.tags.length, 0, "still no tags after attempting to remove");
             });
 
             QUnit.test("Backspace Deletes Last Tag", function(assert) {
@@ -391,19 +416,19 @@ $(document).ready(function() {
                 this.tagInput.addTag("Test 2");
                 this.tagInput.addTag("Test 3");
 
-                assert.deepEqual(this.tagInput.getTags().length, 3, "three tags before removing last tag");
+                assert.deepEqual(this.tagInput.tags.length, 3, "three tags before removing last tag");
                 let event = $.Event("keydown", { which: 8 })
                 this.tagInput.input.trigger(event);
-                assert.deepEqual(this.tagInput.getTags().length, 2, "two tags after removing last tag");
+                assert.deepEqual(this.tagInput.tags.length, 2, "two tags after removing last tag");
             });
 
             QUnit.test("Only Delete If Input Is Blank", function(assert) {
                 this.tagInput.addTag("Test 1");
                 this.tagInput.input.val("Test 2");
-                assert.deepEqual(this.tagInput.getTags().length, 1, "one tag before hitting backspace");
+                assert.deepEqual(this.tagInput.tags.length, 1, "one tag before hitting backspace");
                 let event = $.Event("keydown", { which: 8 })
                 this.tagInput.input.trigger(event);
-                assert.deepEqual(this.tagInput.getTags().length, 1, "still one tag after hitting backspace");
+                assert.deepEqual(this.tagInput.tags.length, 1, "still one tag after hitting backspace");
             });
         });
     });
